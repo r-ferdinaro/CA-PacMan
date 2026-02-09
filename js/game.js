@@ -11,7 +11,6 @@ const gGame = {
 var gBoard
 
 function init() {
-    console.log('hello')
 
     gBoard = buildBoard()
     createPacman(gBoard)
@@ -19,6 +18,7 @@ function init() {
     
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
+    updateScore(0)
 }
 
 function buildBoard() {
@@ -42,15 +42,17 @@ function buildBoard() {
 }
 
 function updateScore(diff) {
-    // update model
-    gGame.score += diff
+    // update model on score or reset to 0 if needed
+    gGame.score = (diff !== 0) ? gGame.score + diff : 0 
     
     // update DOM
     const elScore = document.querySelector('.score span')
     elScore.innerText = gGame.score
 }
 
+// stop game, delete ghosts from modal, and stop ghosts from moving
 function gameOver() {
-    console.log('Game Over')
     gGame.isOn = false
+    gGhosts = []
+    clearInterval(gGhostsInterval)
 }

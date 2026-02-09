@@ -11,7 +11,8 @@ const gGame = {
 var gBoard
 
 function init() {
-
+    let elRestartBtn = document.querySelector('.restart-container')
+    
     gBoard = buildBoard()
     createPacman(gBoard)
     createGhosts(gBoard)
@@ -19,6 +20,8 @@ function init() {
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
     updateScore(0)
+    //elRestartBtn.style.display= 'none'
+    elRestartBtn.innerHTML = ''
 }
 
 function buildBoard() {
@@ -50,9 +53,14 @@ function updateScore(diff) {
     elScore.innerText = gGame.score
 }
 
-// stop game, delete ghosts from modal, and stop ghosts from moving
+// stop game, delete ghosts from modal, stop ghosts from moving, and show restart modal
 function gameOver() {
+    let elRestartBtn = document.querySelector('.restart-container')
+
     gGame.isOn = false
     gGhosts = []
     clearInterval(gGhostsInterval)
+    
+    elRestartBtn.innerHTML = '<div class="restart-modal"><p>Game over | </p> <button onclick="init()">Play again</button></div>'
+    //elRestartBtn.style.display = 'block';
 }

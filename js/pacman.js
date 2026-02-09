@@ -28,7 +28,7 @@ function movePacman(ev) {
     
     // TODO: hitting a ghost? call gameOver
     if (nextCell === GHOST) {
-        gameOver()
+        gameOver(false)
         return
     }
     

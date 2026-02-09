@@ -18,6 +18,7 @@ function createGhost(board) {
     const ghost = {
         pos: { i: 3, j: 3 },
         currCellContent: FOOD,
+        color: getRandomHexColor()
     }
     // TODO: Add the ghost to the ghosts array
     gGhosts.push(ghost)
@@ -81,5 +82,5 @@ function getMoveDiff() {
 }
 
 function getGhostHTML(ghost) {
-    return `<span>${GHOST}</span>`
+    return `<span style="color: ${ghost.color}">${GHOST}</span>`
 }

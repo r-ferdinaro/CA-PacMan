@@ -28,6 +28,17 @@ function renderCell(pos, value) {
     elCell.innerHTML = value
 }
 
+function getInitialFoodCount(){
+    var res = 0
+
+    for (let i = 0; i < gBoard.length; i++) {
+        for (let j = 0; j < gBoard[i].length; j++) {
+            if (gBoard[i][j] !== WALL) res++
+        }
+    }
+    return res
+}
+
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }

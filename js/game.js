@@ -20,7 +20,6 @@ function init() {
     renderBoard(gBoard, '.board-container')
     gGame.isOn = true
     updateScore(0)
-    //elRestartBtn.style.display= 'none'
     elRestartBtn.innerHTML = ''
 }
 
@@ -62,5 +61,4 @@ function gameOver() {
     clearInterval(gGhostsInterval)
     
     elRestartBtn.innerHTML = '<div class="restart-modal"><p>Game over | </p> <button onclick="init()">Play again</button></div>'
-    //elRestartBtn.style.display = 'block';
 }

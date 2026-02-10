@@ -6,7 +6,7 @@ var gGhosts = []
 var gGhostsInterval
 
 function createGhosts(board) {
-    // TODO: Create 3 ghosts and an interval
+    // Create 3 ghosts and an interval
     for (var i = 0; i < 3; i++){
         createGhost(board)
     }
@@ -14,23 +14,22 @@ function createGhosts(board) {
 }
 
 function createGhost(board) {
-    // TODO: Create a ghost with arbitrary start pos & currCellContent
+    // Create a ghost with arbitrary start pos & currCellContent
     const ghost = {
         isAlive: true,
-        isEatable: false,
         pos: { i: 3, j: 3 },
         currCellContent: FOOD,
         color: getRandomHexColor()
     }
-    // TODO: Add the ghost to the ghosts array
+    // Add the ghost to the ghosts array
     gGhosts.push(ghost)
 
-    // TODO: Update the board
+    // Update the board
     board[ghost.pos.i][ghost.pos.j] = GHOST
 }
 
 function moveGhosts() {
-    // TODO: loop through ghosts
+    // loop through ghosts
     for (var i = 0; i < gGhosts.length; i++){
         moveGhost(gGhosts[i])
     }
@@ -40,7 +39,7 @@ function moveGhost(ghost) {
     // don't move dead ghoses
     if (!ghost.isAlive) return
 
-    // TODO: figure out moveDiff, nextPos, nextCell
+    // figure out moveDiff, nextPos, nextCell
     const diff = getMoveDiff()
     const nextPos = {
         i: ghost.pos.i + diff.i,
@@ -48,24 +47,21 @@ function moveGhost(ghost) {
     }
     const nextCell = gBoard[nextPos.i][nextPos.j]
     
-    // TODO: return if cannot move
-    if (nextCell === WALL || nextCell === GHOST) return
+    // return if cannot move
+    if (nextCell === WALL || nextCell === GHOST || nextCell === CHERRY) return
 
     // gameover or kill ghost if eating pacman
     if (nextCell === PACMAN) {
-        if (!ghost.isEatable) {
+        if (gPacman.isSuper) {
+            ghost.isAlive = false
+        } else {
             gameOver(false)
             return
-        } else {
-            ghost.isAlive = false
         }
     }
 
-    // TODO: moving from current pos:
-    // TODO: update the model (restore prev cell contents)
+    // moving from current pos:
     gBoard[ghost.pos.i][ghost.pos.j] = ghost.currCellContent
-    
-    // TODO: update the DOM
     renderCell(ghost.pos, ghost.currCellContent)
     
     // change and render ghost curr & next positions only if ghost is alive
@@ -89,34 +85,46 @@ function getMoveDiff() {
     }
 }
 
-// render ghost with its own or edible color 
+// render ghost with its own color or edible color 
 function getGhostHTML(ghost) {
-    const color = (!ghost.isEatable) ? ghost.color : eatableColor
+    const color = (gPacman.isSuper) ? eatableColor : ghost.color
     
     return `<span style="color: ${color}">${GHOST}</span>`
 }
 
+// ***** Remove me if not needed
 // change all ghosts state to edible / non-edible
-function ghostsEdibleState(isEdible) {    
+//function ghostsEdibleState(isEdible) {    
+//    for (let ghost in gGhosts) {
+//        const currGhost = gGhosts[ghost]
+//
+//        // no need to make dead ghosts edible
+//        if (!currGhost.isAlive) continue
+//
+//        currGhost.isEatable = isEdible
+//        renderCell(currGhost.pos, getGhostHTML(currGhost))
+//    }
+//}
+
+function renderGhosts() {    
     for (let ghost in gGhosts) {
         const currGhost = gGhosts[ghost]
 
         // no need to make dead ghosts edible
         if (!currGhost.isAlive) continue
 
-        currGhost.isEatable = isEdible
         renderCell(currGhost.pos, getGhostHTML(currGhost))
     }
 }
 
 // kill ghost and update score if stood on food
-function findKillGhost(position) {
+function removeGhost(position) {
     for (let ghost in gGhosts) {
         const currGhost = gGhosts[ghost]
 
         if (currGhost.pos.i === position.i && currGhost.pos.j === position.j) {
             currGhost.isAlive = false
-            if (currGhost.currCellContent === FOOD) updateScore(1)
+            if (currGhost.currCellContent === FOOD) updateScore(1, true)
             return
         }
     } 
@@ -129,11 +137,21 @@ function reviveGhosts() {
 
         // no need to revive living ghosts
         if (currGhost.isAlive) continue 
+
+
+        if (
+            gBoard[currGhost.pos.i][currGhost.pos.i] === PACMAN ||
+            gBoard[currGhost.pos.i][currGhost.pos.i] === GHOST ||
+            gBoard[currGhost.pos.i][currGhost.pos.i] === CHERRY
+        ) {
+            let targetCell = getRandomFloorCell(true) 
+
+            currGhost.pos = targetCell.pos
+            currGhost.currCellContent = targetCell.currCellContent
             
-        let targetCell = getRandomFloorCell(false) 
-            
-        currGhost.pos = targetCell.pos
-        currGhost.currCellContent = targetCell.currCellContent
+        } else {
+            currGhost.currCellContent = EMPTY
+        }
         currGhost.isAlive = true
     }
 }

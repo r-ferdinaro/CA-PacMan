@@ -6,7 +6,7 @@ var gSuperTimeout
 var gPacman
 
 function createPacman(board) {
-    // TODO: initialize gPacman...
+    // initialize gPacman...
     gPacman = {
         pos: { i: 5, j: 5 },
         isSuper: false,
@@ -18,23 +18,23 @@ function movePacman(ev) {
 
     if (!gGame.isOn) return
 
-    // TODO: use getNextPos(), nextCell
+    // use getNextPos(), nextCell
     const currPos = gPacman.pos
     const nextPos = getNextPos(ev)
     if (!nextPos) return
 
     const nextCell = gBoard[nextPos.i][nextPos.j]
 
-    // TODO: return if cannot move
+    // return if cannot move
     if (nextCell === WALL) return
     
-    // TODO: hitting a ghost? call gameOver
+    // hitting a ghost? call gameOver
     if (nextCell === GHOST) {
-        if (!gPacman.isSuper) {
+        if (gPacman.isSuper) {
+            removeGhost(nextPos)
+        } else {
             gameOver(false)
             return
-        } else {
-            findKillGhost(nextPos)
         }
     }
 
@@ -42,30 +42,25 @@ function movePacman(ev) {
     if (gPacman.isSuper && nextCell === SUPERFOOD) return
     
     // update score on eating food / Cherry / Super food
-    if (nextCell === FOOD) updateScore(1)
-    if (nextCell === CHERRY) updateScore(10)
+    if (nextCell === FOOD) updateScore(1, true)
+    if (nextCell === CHERRY) updateScore(10, false)
     if (nextCell === SUPERFOOD) superPacman()
 
-    // TODO: moving from current pos:
-    // TODO: update the model
+    // moving from current pos:
     gBoard[currPos.i][currPos.j] = EMPTY
-
-    // TODO: update the DOM
     renderCell(currPos, EMPTY)
     
-    // TODO: Move the pacman to new pos:
-    // TODO: update the model
+    // move the pacman to new pos:
     gPacman.pos = nextPos
     gBoard[gPacman.pos.i][gPacman.pos.j] = PACMAN
     
-    // TODO: update the DOM
     let pacmanState = (!gPacman.isSuper) ? PACMAN : SUPERPACMAN
     renderCell(gPacman.pos, pacmanState)
 }
 
 function getNextPos(ev) {
     var nextPos = { i: gPacman.pos.i, j: gPacman.pos.j }
-    // TODO: figure out nextPos
+    // figure out nextPos
     switch (ev.key) {
         case 'ArrowUp':
             nextPos.i--
@@ -92,14 +87,15 @@ function getNextPos(ev) {
 // Super pacman allows player to kill ghosts, and changes ghosts visuals to indicate they are edible
 function superPacman() {
     gPacman.isSuper = true
-    ghostsEdibleState(true)
+    renderGhosts()
 
     //Upon 5 seconds timeout, Super power is lost, killed ghosts are revived and are not edible
     gSuperTimeout = setTimeout(() => {
         gPacman.isSuper = false
-
-        renderCell(gPacman.pos, PACMAN)
         reviveGhosts()
-        ghostsEdibleState(false)
+        renderCell(gPacman.pos, PACMAN)
     }, 5000)
 }
+
+// there is an issue with the cherry taking up score or something - check it out
+// finish rewriting function reviveGhosts

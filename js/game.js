@@ -15,19 +15,28 @@ const gGame = {
 var gBoard
 
 function init() {
-    const elRestartBtn = document.querySelector('.restart-container')
-    
+    const elRestartModal = document.querySelector('.restart-modal')
+
+    // ensure clearing all upon restart
+    gGhosts = []
+    clearInterval(gGhostsInterval)
+    clearInterval(gCherryInterval)
+    clearTimeout(gSuperTimeout)
+
+    // create board, pacman and ghosts
     gBoard = buildBoard()
     createPacman(gBoard)
     createGhosts(gBoard)   
     
+    // reset all states, counts, and cherry's interval
     gGame.isOn = true
     gGame.foodCount = getInitialFoodCount()
-    updateScore(0)
-    renderBoard(gBoard, '.board-container')
-    elRestartBtn.innerHTML = ''
-
+    gGame.score = 0
+    updateScore(0, false)
     gCherryInterval = setInterval(addCherry, 15000)
+
+    elRestartModal.setAttribute("hidden", "hidden");
+    renderBoard(gBoard, '.board-container')
 }
 
 function buildBoard() {
@@ -41,7 +50,6 @@ function buildBoard() {
         for (var j = 0; j < size; j++) {
             board[i][j] = FOOD
 
-            // build board elements in Switch case instead of multiple if statements
             switch(true) {
                 case (i === 0):
                 case (i === size - 1):
@@ -57,19 +65,6 @@ function buildBoard() {
                     board[i][j] = SUPERFOOD
                     break;
             }
-            
-            // Kept original if statements (for Code review) in case a revert is desired
-            //if (i === 0 || i === size - 1 ||
-            //    j === 0 || j === size - 1 ||
-            //    (j === 3 && i > 4 && i < size - 2)) {
-            //    board[i][j] = WALL
-            //}
-
-            //if (i === 1 && j === 1 || 
-            //    i === 1 && j === endCorner ||
-            //    i === endCorner && j === 1 ||
-            //    i === endCorner && j === endCorner
-            //) {board[i][j] = SUPERFOOD}
         }
     }
     return board
@@ -77,7 +72,7 @@ function buildBoard() {
 
 // add cherry to random empty cell in board every 15 seconds
 function addCherry() {
-    const targetCell = getRandomFloorCell(true)
+    const targetCell = getRandomFloorCell(false)
 
     if (targetCell) {
         gBoard[targetCell.pos.i][targetCell.pos.j] = CHERRY
@@ -85,32 +80,33 @@ function addCherry() {
     }
 }
 
-function updateScore(diff) {
+function updateScore(diff, isLowerCount) {
     const elScore = document.querySelector('.score')
     const elFoodCount = document.querySelector('.food-count')
     
-    // update model on score or reset to 0 if needed
     // update remaining food count
-    gGame.score = (diff !== 0) ? gGame.score + diff : 0 
-    gGame.foodCount--
+    gGame.score += diff
+    if (isLowerCount) gGame.foodCount--
     
     // update DOM
     elScore.innerText = gGame.score
-    elFoodCount.innerHTML = gGame.foodCount
+    elFoodCount.innerText = gGame.foodCount
 
     if (gGame.foodCount === 0) gameOver(true)
 }
 
 // stop game, delete ghosts from modal, stop ghosts from moving, and show restart modal
 function gameOver(isWon = false) {
-    const elRestartBtn = document.querySelector('.restart-container')
+    const elRestartModal = document.querySelector('.restart-modal')
+    const elUserMsg = elRestartModal.querySelector('.user-message')
     const message = (isWon) ? 'victorious' : 'Game over'
 
+    // stop all intervals and timeouts and change game's state
     gGame.isOn = false
-    gGhosts = []
     clearInterval(gGhostsInterval)
     clearInterval(gCherryInterval)
     clearTimeout(gSuperTimeout)
     
-    elRestartBtn.innerHTML = `<div class="restart-modal"><span>${message} | </span> <button onclick="init()">Play again</button></div>`
+    elRestartModal.removeAttribute('hidden')
+    elUserMsg.innerText = `${message} | `
 }

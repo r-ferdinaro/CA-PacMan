@@ -110,6 +110,17 @@ function ghostsEdibleState(isEdible) {
     }
 }
 
+function findKillGhost(position) {
+    for (let ghost in gGhosts) {
+        const currGhost = gGhosts[ghost]
+
+        if (currGhost.pos.i === position.i && currGhost.pos.j === position.j) {
+            currGhost.isAlive = false
+            return
+        }
+    } 
+}
+
 // revive all dead ghosts in random cells
 function reviveGhosts() {
     for (let ghost in gGhosts) {

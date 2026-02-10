@@ -30,8 +30,12 @@ function movePacman(ev) {
     
     // TODO: hitting a ghost? call gameOver
     if (nextCell === GHOST) {
-        gameOver(false)
-        return
+        if (!gPacman.isSuper) {
+            gameOver(false)
+            return
+        } else {
+            findKillGhost(nextPos)
+        }
     }
 
     // avoid player from eating SuperFood while in Super mode

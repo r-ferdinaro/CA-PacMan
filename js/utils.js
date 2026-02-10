@@ -53,17 +53,21 @@ function getRandomHexColor() {
 }
 
 // get a random food/empty cell and its content for when ghosts are revived
-function getRandomFloorCell() {
+function getRandomFloorCell(isOnlyEmpty) {
     const emptyCells = []
     const res = {}
 
     for (let i = 1; i < (gBoard.length - 1); i++) {
         for (let j = 1; j < (gBoard[i].length - 1); j++) {
-            if (gBoard[i][j] === FOOD || gBoard[i][j] === EMPTY) {
+
+            if (gBoard[i][j] === EMPTY || (!isOnlyEmpty && gBoard[i][j] === FOOD)) {
                 emptyCells.push({i: i, j: j})
             }
         }
     }
+
+    // return if no cell is available
+    if (emptyCells.length === 0) return null
 
     res.pos = emptyCells[getRandomIntInclusive(0, emptyCells.length - 1)]
     res.currCellContent = gBoard[res.pos.i][res.pos.j]

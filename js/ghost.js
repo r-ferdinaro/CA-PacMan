@@ -110,13 +110,14 @@ function ghostsEdibleState(isEdible) {
     }
 }
 
+// kill ghost and update score if stood on food
 function findKillGhost(position) {
     for (let ghost in gGhosts) {
         const currGhost = gGhosts[ghost]
 
         if (currGhost.pos.i === position.i && currGhost.pos.j === position.j) {
             currGhost.isAlive = false
-            if (currGhost.currCellContent === FOOD || currGhost.currCellContent === SUPERFOOD) updateScore(1)
+            if (currGhost.currCellContent === FOOD) updateScore(1)
             return
         }
     } 

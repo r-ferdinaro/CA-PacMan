@@ -33,7 +33,7 @@ function getInitialFoodCount(){
 
     for (let i = 0; i < gBoard.length; i++) {
         for (let j = 0; j < gBoard[i].length; j++) {
-            if (gBoard[i][j] !== WALL) res++
+            if (gBoard[i][j] !== WALL && gBoard[i][j] !== SUPERFOOD) res++
         }
     }
     return res

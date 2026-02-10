@@ -42,11 +42,12 @@ function movePacman(ev) {
     if (gPacman.isSuper && nextCell === SUPERFOOD) return
     
     // update score on eating food, and use Super mode if ate Super food
-    if (nextCell === FOOD || nextCell === SUPERFOOD) {
+    if (nextCell === FOOD) {
         updateScore(1)
-        if (nextCell === SUPERFOOD) {
-            superPacman()
-        }
+    }
+    
+    if (nextCell === SUPERFOOD) {
+        superPacman()
     }
 
     // TODO: moving from current pos:

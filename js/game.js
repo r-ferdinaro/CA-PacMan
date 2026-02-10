@@ -3,7 +3,9 @@
 const WALL = '&#8251;'
 const FOOD = '&middot;'
 const SUPERFOOD = '&#9679;'
+const CHERRY = '🍒'
 const EMPTY = ' '
+var gCherryInterval
 
 const gGame = {
     score: 0,
@@ -24,6 +26,8 @@ function init() {
     updateScore(0)
     renderBoard(gBoard, '.board-container')
     elRestartBtn.innerHTML = ''
+
+    gCherryInterval = setInterval(addCherry, 15000)
 }
 
 function buildBoard() {
@@ -71,6 +75,16 @@ function buildBoard() {
     return board
 }
 
+// add cherry to random empty cell in board every 15 seconds
+function addCherry() {
+    const targetCell = getRandomFloorCell(true)
+
+    if (targetCell) {
+        gBoard[targetCell.pos.i][targetCell.pos.j] = CHERRY
+        renderCell(targetCell.pos, CHERRY)
+    }
+}
+
 function updateScore(diff) {
     const elScore = document.querySelector('.score')
     const elFoodCount = document.querySelector('.food-count')
@@ -95,6 +109,7 @@ function gameOver(isWon = false) {
     gGame.isOn = false
     gGhosts = []
     clearInterval(gGhostsInterval)
+    clearInterval(gCherryInterval)
     clearTimeout(gSuperTimeout)
     
     elRestartBtn.innerHTML = `<div class="restart-modal"><span>${message} | </span> <button onclick="init()">Play again</button></div>`

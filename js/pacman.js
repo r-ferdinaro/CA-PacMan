@@ -41,14 +41,10 @@ function movePacman(ev) {
     // avoid player from eating SuperFood while in Super mode
     if (gPacman.isSuper && nextCell === SUPERFOOD) return
     
-    // update score on eating food, and use Super mode if ate Super food
-    if (nextCell === FOOD) {
-        updateScore(1)
-    }
-    
-    if (nextCell === SUPERFOOD) {
-        superPacman()
-    }
+    // update score on eating food / Cherry / Super food
+    if (nextCell === FOOD) updateScore(1)
+    if (nextCell === CHERRY) updateScore(10)
+    if (nextCell === SUPERFOOD) superPacman()
 
     // TODO: moving from current pos:
     // TODO: update the model

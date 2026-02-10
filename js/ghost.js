@@ -3,7 +3,6 @@
 const GHOST = '&#9781'
 const eatableColor = '#db08a6b8'
 var gGhosts = []
-
 var gGhostsInterval
 
 function createGhosts(board) {
@@ -131,7 +130,7 @@ function reviveGhosts() {
         // no need to revive living ghosts
         if (currGhost.isAlive) continue 
             
-        let targetCell = getRandomFloorCell() 
+        let targetCell = getRandomFloorCell(false) 
             
         currGhost.pos = targetCell.pos
         currGhost.currCellContent = targetCell.currCellContent

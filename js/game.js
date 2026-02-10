@@ -80,13 +80,13 @@ function addCherry() {
     }
 }
 
-function updateScore(diff, isLowerCount) {
+function updateScore(diff, decreaseCount) {
     const elScore = document.querySelector('.score')
     const elFoodCount = document.querySelector('.food-count')
     
     // update remaining food count
     gGame.score += diff
-    if (isLowerCount) gGame.foodCount--
+    if (decreaseCount) gGame.foodCount--
     
     // update DOM
     elScore.innerText = gGame.score
@@ -109,4 +109,5 @@ function gameOver(isWon = false) {
     
     elRestartModal.removeAttribute('hidden')
     elUserMsg.innerText = `${message} | `
+
 }

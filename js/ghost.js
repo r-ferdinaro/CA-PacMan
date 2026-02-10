@@ -116,6 +116,7 @@ function findKillGhost(position) {
 
         if (currGhost.pos.i === position.i && currGhost.pos.j === position.j) {
             currGhost.isAlive = false
+            if (currGhost.currCellContent === FOOD || currGhost.currCellContent === SUPERFOOD) updateScore(1)
             return
         }
     } 

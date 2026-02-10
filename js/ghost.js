@@ -1,6 +1,7 @@
 'use strict'
 
 const GHOST = '&#9781'
+const eatableColor = '#db08a6b8'
 var gGhosts = []
 
 var gGhostsInterval
@@ -16,6 +17,8 @@ function createGhosts(board) {
 function createGhost(board) {
     // TODO: Create a ghost with arbitrary start pos & currCellContent
     const ghost = {
+        isAlive: true,
+        isEatable: false,
         pos: { i: 3, j: 3 },
         currCellContent: FOOD,
         color: getRandomHexColor()
@@ -35,6 +38,9 @@ function moveGhosts() {
 }
 
 function moveGhost(ghost) {
+    // don't move dead ghoses
+    if (!ghost.isAlive) return
+
     // TODO: figure out moveDiff, nextPos, nextCell
     const diff = getMoveDiff()
     const nextPos = {
@@ -46,10 +52,14 @@ function moveGhost(ghost) {
     // TODO: return if cannot move
     if (nextCell === WALL || nextCell === GHOST) return
 
-    // TODO: hitting a pacman? call gameOver
+    // gameover or kill ghost if eating pacman
     if (nextCell === PACMAN) {
-        gameOver(false)
-        return
+        if (!ghost.isEatable) {
+            gameOver(false)
+            return
+        } else {
+            ghost.isAlive = false
+        }
     }
 
     // TODO: moving from current pos:
@@ -59,15 +69,14 @@ function moveGhost(ghost) {
     // TODO: update the DOM
     renderCell(ghost.pos, ghost.currCellContent)
     
-    // TODO: Move the ghost to new pos:
-    // TODO: update the model (save cell contents so we can restore later)
-    ghost.pos = nextPos
-    ghost.currCellContent = nextCell
+    // change and render ghost curr & next positions only if ghost is alive
+    if (ghost.isAlive) {
+        ghost.pos = nextPos
+        ghost.currCellContent = nextCell
     
-    gBoard[ghost.pos.i][ghost.pos.j] = GHOST
-
-    // TODO: update the DOM
-    renderCell(ghost.pos, getGhostHTML(ghost))
+        gBoard[ghost.pos.i][ghost.pos.j] = GHOST
+        renderCell(ghost.pos, getGhostHTML(ghost))
+    }
 }
 
 function getMoveDiff() {
@@ -81,6 +90,38 @@ function getMoveDiff() {
     }
 }
 
+// render ghost with its own or edible color 
 function getGhostHTML(ghost) {
-    return `<span style="color: ${ghost.color}">${GHOST}</span>`
+    const color = (!ghost.isEatable) ? ghost.color : eatableColor
+    
+    return `<span style="color: ${color}">${GHOST}</span>`
+}
+
+// change all ghosts state to edible / non-edible
+function ghostsEdibleState(isEdible) {    
+    for (let ghost in gGhosts) {
+        const currGhost = gGhosts[ghost]
+
+        // no need to make dead ghosts edible
+        if (!currGhost.isAlive) continue
+
+        currGhost.isEatable = isEdible
+        renderCell(currGhost.pos, getGhostHTML(currGhost))
+    }
+}
+
+// revive all dead ghosts in random cells
+function reviveGhosts() {
+    for (let ghost in gGhosts) {
+        const currGhost = gGhosts[ghost]
+
+        // no need to revive living ghosts
+        if (currGhost.isAlive) continue 
+            
+        let targetCell = getRandomFloorCell() 
+            
+        currGhost.pos = targetCell.pos
+        currGhost.currCellContent = targetCell.currCellContent
+        currGhost.isAlive = true
+    }
 }

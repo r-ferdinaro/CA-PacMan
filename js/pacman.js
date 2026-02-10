@@ -1,6 +1,8 @@
 'use strict'
 
 const PACMAN = '😁'
+const SUPERPACMAN = '😈'
+var gSuperTimeout
 var gPacman
 
 function createPacman(board) {
@@ -28,13 +30,25 @@ function movePacman(ev) {
     
     // TODO: hitting a ghost? call gameOver
     if (nextCell === GHOST) {
-        gameOver(false)
-        return
+        if (!gPacman.isSuper) {
+            gameOver(false)
+            return
+        } else {
+            findKillGhost(nextPos)
+        }
+    }
+
+    // avoid player from eating SuperFood while in Super mode
+    if (gPacman.isSuper && nextCell === SUPERFOOD) return
+    
+    // update score on eating food, and use Super mode if ate Super food
+    if (nextCell === FOOD) {
+        updateScore(1)
     }
     
-    // TODO: hitting food? call updateScore
-    if (nextCell === FOOD) updateScore(1)
-
+    if (nextCell === SUPERFOOD) {
+        superPacman()
+    }
 
     // TODO: moving from current pos:
     // TODO: update the model
@@ -49,7 +63,8 @@ function movePacman(ev) {
     gBoard[gPacman.pos.i][gPacman.pos.j] = PACMAN
     
     // TODO: update the DOM
-    renderCell(gPacman.pos, PACMAN)
+    let pacmanState = (!gPacman.isSuper) ? PACMAN : SUPERPACMAN
+    renderCell(gPacman.pos, pacmanState)
 }
 
 function getNextPos(ev) {
@@ -76,4 +91,19 @@ function getNextPos(ev) {
             return null
     }
     return nextPos
+}
+
+// Super pacman allows player to kill ghosts, and changes ghosts visuals to indicate they are edible
+function superPacman() {
+    gPacman.isSuper = true
+    ghostsEdibleState(true)
+
+    //Upon 5 seconds timeout, Super power is lost, killed ghosts are revived and are not edible
+    gSuperTimeout = setTimeout(() => {
+        gPacman.isSuper = false
+
+        renderCell(gPacman.pos, PACMAN)
+        reviveGhosts()
+        ghostsEdibleState(false)
+    }, 5000)
 }

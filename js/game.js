@@ -2,6 +2,7 @@
 
 const WALL = '&#8251;'
 const FOOD = '&middot;'
+const SUPERFOOD = '&#9679;'
 const EMPTY = ' '
 
 const gGame = {
@@ -27,6 +28,7 @@ function init() {
 
 function buildBoard() {
     const size = 10
+    const endCorner = size - 2
     const board = []
 
     for (var i = 0; i < size; i++) {
@@ -34,12 +36,36 @@ function buildBoard() {
 
         for (var j = 0; j < size; j++) {
             board[i][j] = FOOD
-            
-            if (i === 0 || i === size - 1 ||
-                j === 0 || j === size - 1 ||
-                (j === 3 && i > 4 && i < size - 2)) {
-                board[i][j] = WALL
+
+            // build board elements in Switch case instead of multiple if statements
+            switch(true) {
+                case (i === 0):
+                case (i === size - 1):
+                case (j === 0):
+                case (j === size - 1):
+                case (j === 3 && i > 4 && i < size - 2):
+                    board[i][j] = WALL
+                    break;
+                case (i === 1 && j === 1):
+                case (i === 1 && j === endCorner):
+                case (i === endCorner && j === 1):
+                case (i === endCorner && j === endCorner):
+                    board[i][j] = SUPERFOOD
+                    break;
             }
+            
+            // Kept original if statements (for Code review) in case a revert is desired
+            //if (i === 0 || i === size - 1 ||
+            //    j === 0 || j === size - 1 ||
+            //    (j === 3 && i > 4 && i < size - 2)) {
+            //    board[i][j] = WALL
+            //}
+
+            //if (i === 1 && j === 1 || 
+            //    i === 1 && j === endCorner ||
+            //    i === endCorner && j === 1 ||
+            //    i === endCorner && j === endCorner
+            //) {board[i][j] = SUPERFOOD}
         }
     }
     return board
@@ -69,6 +95,7 @@ function gameOver(isWon = false) {
     gGame.isOn = false
     gGhosts = []
     clearInterval(gGhostsInterval)
+    clearTimeout(gSuperTimeout)
     
     elRestartBtn.innerHTML = `<div class="restart-modal"><span>${message} | </span> <button onclick="init()">Play again</button></div>`
 }

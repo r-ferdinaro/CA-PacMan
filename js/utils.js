@@ -33,7 +33,7 @@ function getInitialFoodCount(){
 
     for (let i = 0; i < gBoard.length; i++) {
         for (let j = 0; j < gBoard[i].length; j++) {
-            if (gBoard[i][j] !== WALL) res++
+            if (gBoard[i][j] !== WALL && gBoard[i][j] !== SUPERFOOD) res++
         }
     }
     return res
@@ -50,4 +50,23 @@ function getRandomHexColor() {
     randomColor = "0" + randomColor;
   }
   return "#" + randomColor;
+}
+
+// get a random food/empty cell and its content for when ghosts are revived
+function getRandomFloorCell() {
+    const emptyCells = []
+    const res = {}
+
+    for (let i = 1; i < (gBoard.length - 1); i++) {
+        for (let j = 1; j < (gBoard[i].length - 1); j++) {
+            if (gBoard[i][j] === FOOD || gBoard[i][j] === EMPTY) {
+                emptyCells.push({i: i, j: j})
+            }
+        }
+    }
+
+    res.pos = emptyCells[getRandomIntInclusive(0, emptyCells.length - 1)]
+    res.currCellContent = gBoard[res.pos.i][res.pos.j]
+
+    return res
 }

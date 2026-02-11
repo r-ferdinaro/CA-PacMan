@@ -31,6 +31,8 @@ function movePacman(ev) {
     // hitting a ghost? call gameOver
     if (nextCell === GHOST) {
         if (gPacman.isSuper) {
+            killGhostAudio.currentTime = 0
+            killGhostAudio.play()
             removeGhost(nextPos)
         } else {
             gameOver(false)
@@ -42,9 +44,21 @@ function movePacman(ev) {
     if (gPacman.isSuper && nextCell === SUPERFOOD) return
     
     // update score on eating food / Cherry / Super food
-    if (nextCell === FOOD) updateScore(1, true)
-    if (nextCell === CHERRY) updateScore(10, false)
-    if (nextCell === SUPERFOOD) superPacman()
+    if (nextCell === FOOD) {
+        foodAudio.currentTime = 0
+        foodAudio.play()
+        updateScore(1, true)
+    } 
+    if (nextCell === CHERRY) {
+        cherryAudio.currentTime = 0
+        cherryAudio.play()
+        updateScore(10, false)
+    } 
+    if (nextCell === SUPERFOOD) {
+        superFoodAudio.currentTime = 0
+        superFoodAudio.play()
+        superPacman()
+    } 
 
     // moving from current pos:
     gBoard[currPos.i][currPos.j] = EMPTY
@@ -100,6 +114,9 @@ function superPacman() {
 
     //Upon 5 seconds timeout, Super power is lost, killed ghosts are revived and are not edible
     gSuperTimeout = setTimeout(() => {
+        losePowerAudio.currentTime = 0
+        losePowerAudio.play()
+        
         gPacman.isSuper = false
         reviveGhosts()
         renderCell(gPacman.pos, PACMAN())

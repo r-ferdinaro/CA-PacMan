@@ -53,6 +53,8 @@ function moveGhost(ghost) {
     // gameover or kill ghost if eating pacman
     if (nextCell === PACMAN) {
         if (gPacman.isSuper) {
+            killGhostAudio.currentTime = 0
+            killGhostAudio.play()
             ghost.isAlive = false
         } else {
             gameOver(false)

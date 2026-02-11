@@ -5,6 +5,17 @@ const FOOD = '&middot;'
 const SUPERFOOD = '&#9679;'
 const CHERRY = '🍒'
 const EMPTY = ' '
+
+
+const killGhostAudio = new Audio('audio/killGhost.mp3')
+const foodAudio = new Audio('audio/food.mp3')
+const cherryAudio = new Audio('audio/cherry.mp3')
+const superFoodAudio = new Audio('audio/superFood.mp3')
+const losePowerAudio = new Audio('audio/losePowers.mp3')
+const loseAudio = new Audio('audio/lose.mp3')
+const winAudio = new Audio('audio/win.mp3')
+const restartAudio = new Audio('audio/restart.mp3')
+
 var gCherryInterval
 
 const gGame = {
@@ -34,6 +45,9 @@ function init() {
     gGame.score = 0
     updateScore(0, false)
     gCherryInterval = setInterval(addCherry, 15000)
+
+    restartAudio.currentTime = 0
+    restartAudio.play()
 
     elRestartModal.setAttribute("hidden", "hidden");
     renderBoard(gBoard, '.board-container')
@@ -99,7 +113,18 @@ function updateScore(diff, decreaseCount) {
 function gameOver(isWon = false) {
     const elRestartModal = document.querySelector('.restart-modal')
     const elUserMsg = elRestartModal.querySelector('.user-message')
-    const message = (isWon) ? 'victorious' : 'Game over'
+    let message
+
+    if (isWon) {
+
+        message = 'victorious'
+        winAudio.currentTime = 0
+        winAudio.play()
+    } else {
+        loseAudio.currentTime = 0
+        loseAudio.play()
+        message = 'Game over'
+    }
 
     // stop all intervals and timeouts and change game's state
     gGame.isOn = false

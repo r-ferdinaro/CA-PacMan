@@ -1,7 +1,7 @@
 'use strict'
 
-const PACMAN = '😁'
-const SUPERPACMAN = '😈'
+const PACMAN = (degrees = '0') => `<img src="pacman.svg" style="transform: rotate(${degrees}deg)"/>`
+const SUPERPACMAN = (degrees = '0') => `<img src="superPacman.svg" style="transform: rotate(${degrees}deg)"/>`
 var gSuperTimeout
 var gPacman
 
@@ -11,7 +11,7 @@ function createPacman(board) {
         pos: { i: 5, j: 5 },
         isSuper: false,
     }
-    board[gPacman.pos.i][gPacman.pos.j] = PACMAN
+    board[gPacman.pos.i][gPacman.pos.j] = PACMAN()
 }
 
 function movePacman(ev) {
@@ -52,9 +52,18 @@ function movePacman(ev) {
     
     // move the pacman to new pos:
     gPacman.pos = nextPos
-    gBoard[gPacman.pos.i][gPacman.pos.j] = PACMAN
+    gBoard[gPacman.pos.i][gPacman.pos.j] = PACMAN()
     
-    let pacmanState = (!gPacman.isSuper) ? PACMAN : SUPERPACMAN
+    const key = ev.key
+    let degree
+    let pacmanState
+
+    if (key === 'ArrowUp') degree = '-90'
+    else if (key === 'ArrowDown') degree = '90'
+    else if (key === 'ArrowLeft') degree = '180'
+    else degree = '0'
+
+    pacmanState = (gPacman.isSuper) ? SUPERPACMAN(degree) : PACMAN(degree)
     renderCell(gPacman.pos, pacmanState)
 }
 
@@ -93,9 +102,6 @@ function superPacman() {
     gSuperTimeout = setTimeout(() => {
         gPacman.isSuper = false
         reviveGhosts()
-        renderCell(gPacman.pos, PACMAN)
+        renderCell(gPacman.pos, PACMAN())
     }, 5000)
 }
-
-// there is an issue with the cherry taking up score or something - check it out
-// finish rewriting function reviveGhosts

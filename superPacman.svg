@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="3.0977 1.6069 22.7859 24.7639" width="22.7859px" height="24.7639px">
+  <g transform="matrix(0, -0.27515399, 0.26709101, 0, -35.50931575, -38.35554481)" style="transform-origin: 50px 52.3444px;">
+    <path fill="crimson" d=" M50 50 L30 95 A45 45 0 1 1 70 95 Z"/>
+  </g>
+  <ellipse style="stroke: rgb(0, 0, 0); transform-origin: -6.616px -12.965px;" cx="-6.616" cy="-12.965" rx="1.788" ry="1.736" transform="matrix(0, -1, 1, 0, 22.13050461, 19.07918262)"/>
+</svg>

@@ -1,7 +1,7 @@
 'use strict'
 
-const PACMAN = (degrees = '0') => `<img src="pacman.svg" style="transform: rotate(${degrees}deg)"/>`
-const SUPERPACMAN = (degrees = '0') => `<img src="superPacman.svg" style="transform: rotate(${degrees}deg)"/>`
+const PACMAN = (degrees = '0') => `<img src="img/pacman.svg" style="transform: rotate(${degrees}deg)"/>`
+const SUPERPACMAN = (degrees = '0') => `<img src="img/superPacman.svg" style="transform: rotate(${degrees}deg)"/>`
 var gSuperTimeout
 var gPacman
 
